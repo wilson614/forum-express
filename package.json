@@ -38,7 +38,8 @@
     "ignore": [
       "/seeders",
       "/models",
-      "/migrations"
+      "/migrations",
+      "/tests"
     ]
   }
 }
