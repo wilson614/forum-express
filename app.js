@@ -6,6 +6,7 @@ const port = 3000
 
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
+app.use(express.urlencoded({ extended: true }))
 
 app.listen(port, () => {
   db.sequelize.sync()
