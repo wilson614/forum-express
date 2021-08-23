@@ -3,6 +3,9 @@ const exphbs = require('express-handlebars')
 const session = require('express-session')
 const flash = require('connect-flash')
 const methodOverride = require('method-override')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const path = require('path')
 
 const db = require('./models')
