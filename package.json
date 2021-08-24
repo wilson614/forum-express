@@ -45,7 +45,8 @@
       "/seeders",
       "/models",
       "/migrations",
-      "/tests"
+      "/tests",
+      "_helpers.js"
     ]
   }
 }
