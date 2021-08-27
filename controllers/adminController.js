@@ -130,11 +130,7 @@ const adminController = {
           req.flash('error_messages', 'cannot change the role of manager')
           return res.redirect('/admin/users')
         }
-        if (user.isAdmin) {
-          user.isAdmin = false
-        } else {
-          user.isAdmin = true
-        }
+        user.isAdmin = !user.isAdmin
         user.update({ isAdmin: user.isAdmin })
           .then(() => {
             req.flash('success_messages', 'user was successfully to update')
