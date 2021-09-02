@@ -4,9 +4,22 @@
     <div class="p-3">
       <h4>{{userFind.name}}</h4>
       <p>{{userFind.email}}</p>
+      <p>{{count}} 已評論餐廳</p>
       {{#ifCond user.id userFind.id}}
       <a href="/users/{{user.id}}/edit" class="btn btn-primary">edit</a>
       {{/ifCond}}
     </div>
+  </div>
+</div>
+<div class="card mt-5">
+  <div class="card-header">
+    {{count}} 已評論餐廳
+  </div>
+  <div class="card-body">
+    {{#each comments}}
+    <a href="/restaurants/{{this.restaurantId}}" style="display: inline-block;">
+      <img src="{{this.restaurantImage}}" class="m-2" style="width: 50px; height: 50px;">
+    </a>
+    {{/each}}
   </div>
 </div>
