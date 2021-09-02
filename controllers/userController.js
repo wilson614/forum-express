@@ -1,5 +1,8 @@
 const bcrypt = require('bcryptjs')
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const db = require('../models')
+const helpers = require('../_helpers')
 const User = db.User
 
 const userController = {
@@ -43,6 +46,64 @@ const userController = {
     req.flash('success_messages', '登出成功！')
     req.logout()
     res.redirect('/signin')
+  },
+
+  getUser: (req, res) => {
+    const user = req.user
+    User.findByPk(req.params.id)
+      .then(userFind => {
+        res.render('profile', { userFind: userFind.toJSON(), user })
+      })
+  },
+
+  editUser: (req, res) => {
+    const user = req.user
+    res.render('editUser', { user })
+  },
+
+  putUser: (req, res) => {
+    if (!req.body.name) {
+      req.flash('error_messages', "name didn't exist")
+      return res.redirect('back')
+    }
+
+    if (helpers.getUser(req).id !== Number(req.params.id)) {
+      req.flash('error_messages', "you can't edit other's profile")
+      return res.redirect('back')
+    }
+
+    const { file } = req
+    if (file) {
+      imgur.setClientID(IMGUR_CLIENT_ID)
+      imgur.upload(file.path, (err, img) => {
+        if (err) {
+          return console.log(err)
+        }
+        return User.findByPk(req.params.id)
+          .then((user) => {
+            user.update({
+              name: req.body.name,
+              image: file ? img.data.link : user.image
+            })
+              .then(() => {
+                req.flash('success_messages', 'user was successfully to update')
+                res.redirect(`/users/${req.params.id}`)
+              })
+          })
+      })
+    } else {
+      return User.findByPk(req.params.id)
+        .then((user) => {
+          user.update({
+            name: req.body.name,
+            image: user.image
+          })
+            .then(() => {
+              req.flash('success_messages', 'user was successfully to update')
+              res.redirect(`/users/${req.params.id}`)
+            })
+        })
+    }
   }
 }
 
