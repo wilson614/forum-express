@@ -52,7 +52,7 @@ const userController = {
 
   getUser: (req, res) => {
     const userId = req.params.id
-    const user = req.user
+    const user = helpers.getUser(req)
     User.findByPk(userId)
       .then(userFind => {
         Comment.findAndCountAll({
@@ -74,7 +74,7 @@ const userController = {
   },
 
   editUser: (req, res) => {
-    const user = req.user
+    const user = helpers.getUser(req)
     res.render('editUser', { user })
   },
 
