@@ -78,7 +78,11 @@ const userController = {
 
   editUser: (req, res) => {
     const user = helpers.getUser(req)
-    res.render('editUser', { user })
+    if (user.id !== Number(req.params.id)) {
+      req.flash('error_messages', 'you can only edit your own profile')
+      return res.redirect(`/users/${user.id}/edit`)
+    }
+    return res.render('editUser', { user })
   },
 
   putUser: (req, res) => {
