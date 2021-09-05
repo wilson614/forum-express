@@ -21,6 +21,7 @@ const authenticatedAdmin = (req, res, next) => {
   }
 }
 
+router.post('/signup', userController.signUp)
 router.post('/signin', userController.signIn)
 
 router.get('/admin/restaurants', authenticated, authenticatedAdmin, adminController.getRestaurants)
