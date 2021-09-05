@@ -20,6 +20,7 @@ app.engine('handlebars', exphbs({
 }))
 app.set('view engine', 'handlebars')
 app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
 app.use(passport.initialize())
 app.use(passport.session())

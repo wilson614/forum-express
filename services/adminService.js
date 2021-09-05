@@ -1,3 +1,5 @@
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const db = require('../models')
 const Restaurant = db.Restaurant
 const Category = db.Category
@@ -30,6 +32,47 @@ const adminService = {
             callback(data)
           })
       })
+  },
+  postRestaurant: (req, res, callback) => {
+    if (!req.body.name) {
+      const data = { status: 'error', message: "name didn't exist" }
+      return callback(data)
+    }
+
+    const { file } = req
+    if (file) {
+      imgur.setClientID(IMGUR_CLIENT_ID)
+      imgur.upload(file.path, (err, img) => {
+        if (err) {
+          return console.log(err)
+        }
+        return Restaurant.create({
+          name: req.body.name,
+          tel: req.body.tel,
+          address: req.body.address,
+          opening_hours: req.body.opening_hours,
+          description: req.body.description,
+          image: file ? img.data.link : null,
+          CategoryId: req.body.categoryId
+        }).then(() => {
+          const data = { status: 'success', message: 'restaurant was successfully created' }
+          callback(data)
+        })
+      })
+    } else {
+      return Restaurant.create({
+        name: req.body.name,
+        tel: req.body.tel,
+        address: req.body.address,
+        opening_hours: req.body.opening_hours,
+        description: req.body.description,
+        image: null,
+        CategoryId: req.body.categoryId
+      }).then(() => {
+        const data = { status: 'success', message: 'restaurant was successfully created' }
+        callback(data)
+      })
+    }
   }
 }
 
