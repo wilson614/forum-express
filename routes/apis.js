@@ -6,6 +6,9 @@ const upload = multer({ dest: 'temp/' })
 
 const adminController = require('../controllers/api/adminController.js')
 const categoryController = require('../controllers/api/categoryController')
+const userController = require('../controllers/api/userController.js')
+
+router.post('/signin', userController.signIn)
 
 router.get('/admin/restaurants', adminController.getRestaurants)
 router.get('/admin/restaurants/:id', adminController.getRestaurant)
