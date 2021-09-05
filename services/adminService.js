@@ -3,6 +3,7 @@ const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const db = require('../models')
 const Restaurant = db.Restaurant
 const Category = db.Category
+const User = db.User
 
 const adminService = {
   getRestaurants: (req, res, callback) => {
@@ -122,6 +123,27 @@ const adminService = {
             })
         })
     }
+  },
+  getUsers: (req, res, callback) => {
+    return User.findAll({ raw: true }).then(users => {
+      const data = { users }
+      return callback(data)
+    })
+  },
+  toggleAdmin: (req, res, callback) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        if (user.email === 'root@example.com') {
+          const data = { status: 'error', message: 'cannot change the role of manager' }
+          return callback(data)
+        }
+        user.isAdmin = !user.isAdmin
+        user.update({ isAdmin: user.isAdmin })
+          .then(() => {
+            const data = { status: 'success', message: 'user was successfully to update' }
+            callback(data)
+          })
+      })
   }
 }
 

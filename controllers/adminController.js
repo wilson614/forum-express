@@ -2,7 +2,6 @@ const db = require('../models')
 const adminService = require('../services/adminService')
 const Restaurant = db.Restaurant
 const Category = db.Category
-const User = db.User
 
 const adminController = {
   getRestaurants: (req, res) => {
@@ -66,24 +65,19 @@ const adminController = {
     })
   },
   getUsers: (req, res) => {
-    return User.findAll({ raw: true }).then(users => {
-      return res.render('admin/users', { users })
+    adminService.getUsers(req, res, (data) => {
+      return res.render('admin/users', data)
     })
   },
   toggleAdmin: (req, res) => {
-    return User.findByPk(req.params.id)
-      .then(user => {
-        if (user.email === 'root@example.com') {
-          req.flash('error_messages', 'cannot change the role of manager')
-          return res.redirect('/admin/users')
-        }
-        user.isAdmin = !user.isAdmin
-        user.update({ isAdmin: user.isAdmin })
-          .then(() => {
-            req.flash('success_messages', 'user was successfully to update')
-            res.redirect('/admin/users')
-          })
-      })
+    adminService.toggleAdmin(req, res, (data) => {
+      if (data.status === 'error') {
+        req.flash('error_messages', data.message)
+        return res.redirect('/admin/users')
+      }
+      req.flash('success_messages', data.message)
+      res.redirect('/admin/users')
+    })
   }
 }
 
