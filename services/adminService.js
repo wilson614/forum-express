@@ -20,6 +20,16 @@ const adminService = {
       const data = { restaurant: restaurant.toJSON() }
       callback(data)
     })
+  },
+  deleteRestaurant: (req, res, callback) => {
+    return Restaurant.findByPk(req.params.id)
+      .then((restaurant) => {
+        restaurant.destroy()
+          .then(() => {
+            const data = { status: 'success', message: '' }
+            callback(data)
+          })
+      })
   }
 }
 
